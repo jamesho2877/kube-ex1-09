@@ -4,3 +4,5 @@ This project includes solutions for the following exercises:
 
 * Exercise 1.09: More services
 * Exercise 1.11: Persisting data
+* Exercise 2.01: Connecting pods
+* Exercise 2.02: Project v1.0 (sync port)
