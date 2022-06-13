@@ -1,16 +1,13 @@
-import path from "path";
 import express from "express";
 import session from "express-session";
 const { randomUUID } = await import("node:crypto");
-import { readFile, writeFile } from "node:fs";
+import Database from "./src/database.mjs";
 
-const {
-  PORT = 3500,
-  PRODUCTION = "true",
-} = process.env;
+const { PORT = 3500 } = process.env;
 
 const app = express();
 const router = express.Router();
+const database = new Database();
 
 app.use(
   session({
@@ -24,13 +21,12 @@ app.use(
   })
 );
 
-router.use(function (req, res, next) {
-  const curViews = req.session.views;
-  const newViews = curViews > 0 ? curViews+1 : 1;
-  req.session.views = newViews;
+router.use(async (req, res, next) => {
+  const curViews = await database.readPingPongContent();
+  const newViews = curViews + 1;
 
-  const filePath = PRODUCTION === "false" ? path.join(process.cwd(),"../kube-ex1-01/log.txt") : "/usr/src/app/files/log.txt";
-  writeDataToFile(filePath, newViews, "view");
+  const newViewsFromDB = await database.writePingPongContent(newViews);
+  req.session.views = newViewsFromDB;
 
   next();
 });
@@ -44,31 +40,3 @@ app.use(router);
 app.listen(PORT, () => {
   console.log(`Server started in port ${PORT}`);
 });
-
-function writeDataToFile(filePath, data, type) {
-  try {
-    let newContentArr = [];
-    readFile(filePath, "utf8", (err, fileContent) => {
-      if (err) throw err;
-      
-      const fileContentArr = fileContent.split("\n");
-
-      if (fileContentArr.length === 1) {
-        newContentArr = type === "view"
-          ? fileContentArr[0].length > 50 ? fileContentArr.concat(data) : [data]
-          : fileContentArr[0].length > 50 ? [data] : [data, fileContentArr[0]];
-      } else {
-        newContentArr = fileContentArr.slice(0, 2);
-        newContentArr[type === "view" ? 1 : 0] = data;
-      }
-
-      const newContent = new Uint8Array(Buffer.from(newContentArr.join("\n")));
-      writeFile(filePath, newContent, (err) => {
-        if (err) throw err;
-        console.log("Data was written to file!");
-      });
-    });
-  } catch(err) {
-    console.error("Could not write to file", err);
-  }
-}

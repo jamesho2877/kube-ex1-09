@@ -8,6 +8,6 @@ spec:
   selector:
     app: ping-pong-app
   ports:
-    - port: 8005
+    - port: 8080
       protocol: TCP
       targetPort: 3500
