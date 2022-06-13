@@ -16,7 +16,7 @@ spec:
       containers:
         - name: ping-pong-app
           image: jamesho287/kube-ex1-09:v0.3
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: NS
               valueFrom:
