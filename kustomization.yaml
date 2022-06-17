@@ -1,0 +1,5 @@
+resources:
+- manifests/deployment.yml
+- manifests/service.yml
+
+- manifests/horizontal_pod_autoscaler.yml

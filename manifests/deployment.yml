@@ -17,6 +17,10 @@ spec:
         - name: ping-pong-app
           image: jamesho287/kube-ex1-09:v0.3
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
           env:
             - name: NS
               valueFrom:
