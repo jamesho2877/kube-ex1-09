@@ -15,11 +15,28 @@ spec:
     spec:
       containers:
         - name: ping-pong-app
-          image: jamesho287/kube-ex1-09:v0.3
+          image: jamesho287/kube-ex1-09:v0.4
           imagePullPolicy: Always
+          ports:
+          - name: readiness-port
+            containerPort: 3500
+          - name: server-port
+            containerPort: 3500
+          readinessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 2
+            failureThreshold: 5
+            # timeoutSeconds: 5
+            httpGet:
+              path: /healthz
+              port: readiness-port
+              # httpHeaders:
+              # - name: healthcheck
+              #   value: "1"
           resources:
             limits:
-              cpu: "50m"
+              cpu: "100m"
               memory: "100Mi"
           env:
             - name: NS

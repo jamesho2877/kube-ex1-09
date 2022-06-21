@@ -32,8 +32,10 @@ const database = new Database();
 // });
 
 
-router.get("/", async (req, res) => {
-  res.send("Hi");
+router.get("/healthz", async (req, res) => {
+  const { err } = await database.testConnection();
+  console.log("healthz - err", err);
+  res.sendStatus(err ? 500 : 200);
 });
 
 router.get("/pingpong", async (req, res) => {
