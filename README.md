@@ -12,3 +12,12 @@ This project includes solutions for the following exercises:
 * Exercise 3.02: Back to Ingress
 * Exercise 3.09: Resource limits
 * Exercise 4.01: Readiness Probe
+* Exercise 5.05: Deploy to Serverless
+
+
+For `Exercise 5.05: Deploy to Serverless`, since the app uses `express-session` so the `curl` command needs to add couple of cookie flags where `-b` instructs `curl` where to store cookies and `-c` for where to read.
+```bash
+kubectl apply -f manifests/knative-service.yaml
+
+curl -b cookies.txt -c cookies.txt -H "Host: pingpong-knative.default.example.com" http://localhost:8081
+```
